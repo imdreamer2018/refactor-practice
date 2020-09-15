@@ -1,41 +1,46 @@
 package com.twu.refactoring;
 
+import java.util.Arrays;
+
 public class Direction {
     private final char direction;
+    private final char[] strings = {'N','W','S','E'};
 
     public Direction(char direction) {
         this.direction = direction;
     }
 
     public Direction turnRight() {
-        switch (direction) {
-            case 'N':
-                return new Direction('E');
-            case 'S':
-                return new Direction('W');
-            case 'E':
-                return new Direction('N');
-            case 'W':
-                return new Direction('S');
-            default:
-                throw new IllegalArgumentException();
-        }
+        return turn(-1);
     }
 
     public Direction turnLeft() {
-        switch (direction) {
-            case 'N':
-                return new Direction('W');
-            case 'S':
-                return new Direction('E');
-            case 'E':
-                return new Direction('N');
-            case 'W':
-                return new Direction('S');
-            default:
-                throw new IllegalArgumentException();
-        }
+        return turn(1);
     }
+
+    private Direction turn(int turnRightInstruction) {
+        int position = Arrays.binarySearch(strings, direction);
+        if (!verifyInstruction()) {
+            throw new IllegalArgumentException();
+        }
+        //need refactor
+        if (position + turnRightInstruction < 0) {
+            return new Direction(strings[strings.length - 1]);
+        } else if (position + turnRightInstruction > strings.length) {
+            return new Direction(strings[0]);
+        }
+        return new Direction(strings[position + turnRightInstruction]);
+    }
+
+    private boolean verifyInstruction() {
+        for (char val : strings) {
+            if (val == direction)
+                return true;
+        }
+        return false;
+    }
+
+
 
     @Override
     public boolean equals(Object o) {
